@@ -63,5 +63,30 @@ public class EmployeeDAO {
      }
         return AllEmployee;
     }
+    public static void UpdateEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
+        DatabaseConnection db = new DatabaseConnection();
+        Connection connection = db.createConnection();
+        try {
+            String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, nom);
+            statement.setString(2, prenom);
+            statement.setString(3, email);
+            statement.setString(4, poste);
+            statement.setString(5, contacts);
+            statement.setString(6, genre);
+            statement.setString(7, address);
+            statement.setInt(8, id_employee);
+
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("l'employee avec l'id " + id_employee + " est metre a jour.");
+            } else {
+                System.out.println("l'employee qui porte l'id " + id_employee + " n'existe pas.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
