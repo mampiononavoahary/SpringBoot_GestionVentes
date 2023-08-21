@@ -4,10 +4,7 @@ import com.example.springbootproject.connectionBase.DatabaseConnection;
 import com.example.springbootproject.model.Employee;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +37,8 @@ public class EmployeeDAO {
         }
         return null;
     }
+
+    //Find All Employee
     public List<Employee> FindAllEmp(){
         List<Employee> AllEmployee = new ArrayList<>();
         String requete = "SELECT * FROM employee;";
@@ -63,11 +62,13 @@ public class EmployeeDAO {
      }
         return AllEmployee;
     }
+
+    //update Employee
     public static void UpdateEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.createConnection();
         try {
-            String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?";
+            String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?;";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, nom);
             statement.setString(2, prenom);
@@ -87,6 +88,33 @@ public class EmployeeDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    //find employee by id
+    public static Employee FindEmployeeById(int id_employee){
+        DatabaseConnection db = new DatabaseConnection();
+        Connection connection = db.createConnection();
+        try {
+            Statement statement = connection.createStatement();
+            String sql = "SELECT * FROM Employee WHERE id = "+ id_employee;
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()){
+                return new Employee(
+                        resultSet.getInt("id_employee"),
+                        resultSet.getString("nom"),
+                        resultSet.getString("prenom"),
+                        resultSet.getString("email"),
+                        resultSet.getString("poste"),
+                        resultSet.getString("contacts"),
+                        resultSet.getString("genre"),
+                        resultSet.getString("address")
+                );
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
