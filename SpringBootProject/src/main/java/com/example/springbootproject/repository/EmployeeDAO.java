@@ -2,40 +2,36 @@ package com.example.springbootproject.repository;
 
 import com.example.springbootproject.connectionBase.DatabaseConnection;
 import com.example.springbootproject.model.Employee;
+import com.example.springbootproject.model.Utilisateur;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class EmployeeDAO {
     DatabaseConnection dbc = new DatabaseConnection();
     Connection connecter = dbc.createConnection();
 
-    public Employee InsertEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
+    public void InsertEmployee(Employee insertEmp) throws Exception{
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.createConnection();
-        try {
-            String sql = "INSERT INTO employee(id_employee,nom,prenom,email,poste,contacts,genre,address) VALUES(?,?,?,?,?,?,?,?);";
-            PreparedStatement Statement = connection.prepareStatement(sql);
-            Statement.setInt(1,id_employee);
-            Statement.setString(2,nom);
-            Statement.setString(3,prenom);
-            Statement.setString(4,email);
-            Statement.setString(5,poste);
-            Statement.setString(6,contacts);
-            Statement.setString(7,genre);
-            Statement.setString(8,address);
 
-            int rows = Statement.executeUpdate();
-            if(rows>0){
-                System.out.println("Insertion employee avec success");
-            }
-        }catch (Exception e){
-            e.printStackTrace();
+        String sql = "INSERT INTO employee(id_employee,nom,prenom,email,poste,contacts,genre,address)"+ "VALUES(?,?,?,?,?,?,?,?);";
+        try (PreparedStatement Statement = connection.prepareStatement(sql)){
+            Statement.setInt(1,insertEmp.getId_employee());
+            Statement.setString(2,insertEmp.getNom());
+            Statement.setString(3, insertEmp.getPrenom());
+            Statement.setString(4, insertEmp.getEmail());
+            Statement.setString(5,insertEmp.getPoste());
+            Statement.setString(6,insertEmp.getContacts());
+            Statement.setString(7,insertEmp.getGenre());
+            Statement.setString(8,insertEmp.getAddress());
+
+          Statement.executeUpdate();
         }
-        return null;
     }
 
     //Find All Employee
@@ -64,7 +60,7 @@ public class EmployeeDAO {
     }
 
     //update Employee
-    public static void UpdateEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
+    public void UpdateEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.createConnection();
         try {
@@ -91,30 +87,36 @@ public class EmployeeDAO {
     }
 
     //find employee by id
-    public static Employee FindEmployeeById(int id_employee){
-        DatabaseConnection db = new DatabaseConnection();
-        Connection connection = db.createConnection();
-        try {
-            Statement statement = connection.createStatement();
-            String sql = "SELECT * FROM Employee WHERE id = "+ id_employee;
-            ResultSet resultSet = statement.executeQuery(sql);
+    public Optional<Employee> findEmployeeById(int id_employee) throws SQLException {
+            DatabaseConnection db = new DatabaseConnection();
+            Connection connection = db.createConnection();
 
-            if (resultSet.next()){
-                return new Employee(
-                        resultSet.getInt("id_employee"),
-                        resultSet.getString("nom"),
-                        resultSet.getString("prenom"),
-                        resultSet.getString("email"),
-                        resultSet.getString("poste"),
-                        resultSet.getString("contacts"),
-                        resultSet.getString("genre"),
-                        resultSet.getString("address")
-                );
+            String sql = "SELECT * FROM Employee WHERE id_employee = ?";
+            try(PreparedStatement statement = connection.prepareStatement(sql)){
+                statement.setInt(1,id_employee);
+                try(ResultSet resultSet = statement.executeQuery()){
+                    if (resultSet.next()){
+                        return Optional.of(extractEmployeeFromResultSet(resultSet));
+                    }
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+        return Optional.empty();
     }
+    private Employee extractEmployeeFromResultSet(ResultSet resultSet) throws Exception{
+            int id_employee = resultSet.getInt("id_employee");
+            String nom = resultSet.getString("nom");
+            String prenom = resultSet.getString("prenom");
+            String email = resultSet.getString("email");
+            String poste = resultSet.getString("poste");
+            String contacts = resultSet.getString("contacts");
+            String genre = resultSet.getString("genre");
+            String address = resultSet.getString("address");
+
+            return new Employee(id_employee,nom,prenom,email,poste,contacts,genre,address);
+
+    }
+
 
 }
