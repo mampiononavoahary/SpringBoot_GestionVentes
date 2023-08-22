@@ -1,18 +1,21 @@
 package com.example.springbootproject.controller;
 
+import com.example.springbootproject.Service.EmployeeService;
 import com.example.springbootproject.model.Employee;
 import com.example.springbootproject.repository.EmployeeDAO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class EmployeeController {
-    private EmployeeDAO empDAO;
-    public EmployeeController(EmployeeDAO empDAO){
+   private EmployeeService employeeService;
+   private EmployeeDAO empDAO;
+
+    public EmployeeController(EmployeeService employeeService, EmployeeDAO empDAO) {
+        this.employeeService = employeeService;
         this.empDAO = empDAO;
     }
 
@@ -21,19 +24,11 @@ public class EmployeeController {
         return empDAO.FindAllEmp();
     }
     @PostMapping("/insertemployee")
-    public String InsertEmployee(@RequestBody Employee employee) {
-        empDAO.InsertEmployee(
-                employee.getId_employee(),
-                employee.getNom(),
-                employee.getPrenom(),
-                employee.getEmail(),
-                employee.getAddress(),
-                employee.getContacts(),
-                employee.getPoste(),
-                employee.getGenre()
-        );
-
-        return "Employee inserted successfully!";
+    public Employee insertEmp(@RequestBody Employee insertEmp){
+        return employeeService.insert(insertEmp);
     }
-
+    @GetMapping("/Employee/{id_employee}")
+    public Optional<Employee> findEmployeeId(@PathVariable int id_employee) throws SQLException {
+        return employeeService.findByid(id_employee);
+    }
 }
