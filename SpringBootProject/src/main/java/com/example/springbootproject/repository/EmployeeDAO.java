@@ -15,7 +15,7 @@ public class EmployeeDAO {
     DatabaseConnection dbc = new DatabaseConnection();
     Connection connecter = dbc.createConnection();
 
-    public void InsertEmployee(Employee insertEmp) throws Exception{
+    public void InsertEmployee(Employee insertEmp){
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.createConnection();
 
@@ -31,6 +31,8 @@ public class EmployeeDAO {
             Statement.setString(8,insertEmp.getAddress());
 
           Statement.executeUpdate();
+        }catch (SQLException e){
+            throw new RuntimeException("Error in insert");
         }
     }
 
@@ -60,26 +62,25 @@ public class EmployeeDAO {
     }
 
     //update Employee
-    public void UpdateEmployee(int id_employee, String nom, String prenom, String email, String address, String contacts, String poste,String genre){
+    public void UpdateEmployee(Employee update){
         DatabaseConnection db = new DatabaseConnection();
         Connection connection = db.createConnection();
-        try {
-            String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?;";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, nom);
-            statement.setString(2, prenom);
-            statement.setString(3, email);
-            statement.setString(4, poste);
-            statement.setString(5, contacts);
-            statement.setString(6, genre);
-            statement.setString(7, address);
-            statement.setInt(8, id_employee);
+        String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?;";
+        try (PreparedStatement statement = connection.prepareStatement(sql);){
+            statement.setInt(1, update.getId_employee());
+            statement.setString(2, update.getNom());
+            statement.setString(3, update.getPrenom());
+            statement.setString(4, update.getEmail());
+            statement.setString(5, update.getPoste());
+            statement.setString(6, update.getContacts());
+            statement.setString(7, update.getGenre());
+            statement.setString(8, update.getAddress());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("l'employee avec l'id " + id_employee + " est metre a jour.");
+                System.out.println("the employee id " + update.getId_employee() + " is alredy up to date");
             } else {
-                System.out.println("l'employee qui porte l'id " + id_employee + " n'existe pas.");
+                System.out.println("the employee with id " + update.getId_employee() + " is not in the list employee");
             }
         } catch (SQLException e) {
             e.printStackTrace();
