@@ -67,14 +67,15 @@ public class EmployeeDAO {
         Connection connection = db.createConnection();
         String sql = "UPDATE Employee SET nom = ?, prenom = ?, email = ?, poste = ?, contacts = ?, genre = ?, address = ? WHERE id_employee = ?;";
         try (PreparedStatement statement = connection.prepareStatement(sql);){
-            statement.setInt(1, update.getId_employee());
-            statement.setString(2, update.getNom());
-            statement.setString(3, update.getPrenom());
-            statement.setString(4, update.getEmail());
-            statement.setString(5, update.getPoste());
-            statement.setString(6, update.getContacts());
-            statement.setString(7, update.getGenre());
-            statement.setString(8, update.getAddress());
+
+            statement.setString(1, update.getNom());
+            statement.setString(2, update.getPrenom());
+            statement.setString(3, update.getEmail());
+            statement.setString(4, update.getPoste());
+            statement.setString(5, update.getContacts());
+            statement.setString(6, update.getGenre());
+            statement.setString(7, update.getAddress());
+            statement.setInt(8, update.getId_employee());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
@@ -87,6 +88,19 @@ public class EmployeeDAO {
         }
     }
 
+    //Delete Employee
+
+    public void deleteEmployee(int id_employee) throws Exception{
+        DatabaseConnection db = new DatabaseConnection();
+        Connection connection = db.createConnection();
+
+        String sql = "DELETE FROM Employee WHERE id_employee = ?;";
+
+        try(PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1,id_employee);
+            statement.executeUpdate();
+        }
+    }
     //find employee by id
     public Optional<Employee> findEmployeeById(int id_employee) throws SQLException {
             DatabaseConnection db = new DatabaseConnection();
