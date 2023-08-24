@@ -13,16 +13,15 @@ import java.util.Optional;
 @RestController
 public class EmployeeController {
    private EmployeeService employeeService;
-   private EmployeeDAO empDAO;
 
-    public EmployeeController(EmployeeService employeeService, EmployeeDAO empDAO) {
+
+    public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
-        this.empDAO = empDAO;
     }
 
     @GetMapping("/ListEmployee")
     public List<Employee> ListAllEmployee() throws Exception {
-        return empDAO.FindAllEmp();
+        return employeeService.findAllEmployee();
     }
     @PostMapping("/insertemployee")
     public Employee insertEmp(@RequestBody Employee insertEmp){

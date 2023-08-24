@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @AllArgsConstructor
 @Getter
@@ -13,7 +13,7 @@ public class Commande {
     private int id_commande;
     private int id_client;
     private int id_employee;
-    private Date date_commande;
+    private LocalDate date_commande;
 
     @Override
     public String toString() {
