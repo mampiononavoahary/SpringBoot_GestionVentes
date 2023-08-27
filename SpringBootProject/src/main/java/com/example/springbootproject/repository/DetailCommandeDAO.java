@@ -49,13 +49,7 @@ public class DetailCommandeDAO {
             statement.setInt(4,detailCommande.getQuantite());
             statement.setString(5,detailCommande.getMode_payment());
 
-            int rows = statement.executeUpdate();
-
-            if (rows>0){
-                System.out.println("Inserted detail commande succesfuly");
-            }else {
-                System.out.println("Error in Inserted");
-            }
+            statement.executeUpdate();
         }
     }
 

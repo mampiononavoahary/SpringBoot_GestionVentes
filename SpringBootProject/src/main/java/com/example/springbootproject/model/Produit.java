@@ -11,9 +11,9 @@ public class Produit {
     private int id_produit;
     private String nom_produit;
     private String description;
-    private String type;
-    private double prix;
     private int quantiter_stock;
+    private double prix;
+    private String type;
 
     @Override
     public String toString() {
