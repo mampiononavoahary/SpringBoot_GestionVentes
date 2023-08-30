@@ -56,3 +56,5 @@ find by id: localhost:8080/Facture/{id_facture}
 insert : localhost:8080/InsertFacture
 update : localhost:8080/updateFacture/{id_facture}
 delete : localhost:8080/deleFacture/{id_facture}
+
+![MCD](/home/voahary/SpringBoot_GestionVentes/SpringBootProject/src/main/java/com/example/springbootproject/SQL/Screenshot from 2023-08-29 22-13-35.png)
